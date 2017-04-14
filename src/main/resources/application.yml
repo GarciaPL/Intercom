@@ -1,0 +1,5 @@
+intercom:
+  distance: 100
+  officeLatitude: 53.3393
+  officeLongitude: -6.2576841
+  earthRadius: 6371.01
