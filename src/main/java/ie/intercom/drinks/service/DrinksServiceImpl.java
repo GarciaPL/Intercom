@@ -2,12 +2,11 @@ package ie.intercom.drinks.service;
 
 import ie.intercom.drinks.config.IntercomProperties;
 import ie.intercom.drinks.model.Customer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class DrinksServiceImpl implements DrinksService {
@@ -25,8 +24,10 @@ public class DrinksServiceImpl implements DrinksService {
 
             // radius * arccos(sin(x1) * sin(x2) + cos(x1) * cos(x2) * cos(y1 - y2))
             double distance = intercomProperties.getEarthRadius() *
-                    Math.acos(Math.sin(Math.toRadians(intercomProperties.getOfficeLatitude())) * Math.sin(Math.toRadians(customer.getLatitude())) +
-                            Math.cos(Math.toRadians(intercomProperties.getOfficeLatitude())) * Math.cos(Math.toRadians(customer.getLatitude())) *
+                    Math.acos(Math.sin(Math.toRadians(intercomProperties.getOfficeLatitude())) * Math
+                            .sin(Math.toRadians(customer.getLatitude())) +
+                            Math.cos(Math.toRadians(intercomProperties.getOfficeLatitude())) * Math
+                                    .cos(Math.toRadians(customer.getLatitude())) *
                                     Math.cos(Math.toRadians(intercomProperties.getOfficeLongitude() - (double) customer.getLongitude())));
 
             if (distance < intercomProperties.getDistance()) {

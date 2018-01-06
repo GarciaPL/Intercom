@@ -12,7 +12,7 @@ public class Customer {
 
     @JsonCreator
     public Customer(@JsonProperty("user_id") Long userId, @JsonProperty("name") String name,
-                    @JsonProperty("latitude") Double latitude, @JsonProperty("longitude") Double longitude) {
+            @JsonProperty("latitude") Double latitude, @JsonProperty("longitude") Double longitude) {
         this.userId = userId;
         this.name = name;
         this.latitude = latitude;

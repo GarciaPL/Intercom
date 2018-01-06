@@ -4,14 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ie.intercom.drinks.config.IntercomProperties;
 import ie.intercom.drinks.model.Customer;
 import ie.intercom.drinks.service.DrinksService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
-
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
@@ -19,6 +11,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 @Component
 public class IntercomDrinksRunner implements ApplicationRunner {
@@ -50,7 +49,8 @@ public class IntercomDrinksRunner implements ApplicationRunner {
 
         Assert.isTrue(applicationArguments.getOptionNames().stream().anyMatch(i -> i.equals(CUSTOMERS)), NO_PARAMETER);
         Assert.isTrue(applicationArguments.getOptionNames().size() > 0 && applicationArguments.getOptionNames().size() < 2, MANY_ARGUMENTS);
-        Assert.isTrue(applicationArguments.getNonOptionArgs().size() > 0 && applicationArguments.getNonOptionArgs().size() < 2, MANY_PARAMETERS);
+        Assert.isTrue(applicationArguments.getNonOptionArgs().size() > 0 && applicationArguments.getNonOptionArgs().size() < 2,
+                MANY_PARAMETERS);
 
         String path = applicationArguments.getNonOptionArgs().stream().findFirst().get();
         Assert.isTrue(path.replaceAll("^.*\\.([^.]+)$", "$1").equals("json"), WRONG_EXTENSION);

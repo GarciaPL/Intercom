@@ -1,5 +1,10 @@
 package ie.intercom.drinks.service;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.isEmptyString;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+
 import ie.intercom.drinks.config.IntercomProperties;
 import ie.intercom.drinks.model.Customer;
 import org.assertj.core.util.Lists;
@@ -10,16 +15,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.isEmptyString;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-
 @RunWith(MockitoJUnitRunner.class)
 public class DrinksServiceImplTest {
 
     @Mock
-    IntercomProperties intercomProperties;
+    private IntercomProperties intercomProperties;
 
     @InjectMocks
     private DrinksService drinksService = new DrinksServiceImpl();
@@ -41,17 +41,20 @@ public class DrinksServiceImplTest {
     }
 
     @Test
-    public void testInRange() throws Exception {
+    public void testInRange() {
         String result = drinksService.findCustomersInRange(Lists.newArrayList(customerFirst, customerSecond, customerThird));
+
         assertThat(result, containsString("John(1)"));
         assertThat(result, containsString("Mike(2)"));
         assertThat(result, containsString("Lisa(3)"));
     }
 
     @Test
-    public void testOutRange() throws Exception {
+    public void testOutRange() {
         when(intercomProperties.getDistance()).thenReturn(10.0);
+
         String result = drinksService.findCustomersInRange(Lists.newArrayList(customerFirst, customerSecond, customerThird));
+
         assertThat(result, isEmptyString());
     }
 }
