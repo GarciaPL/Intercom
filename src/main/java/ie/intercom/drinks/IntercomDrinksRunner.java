@@ -48,8 +48,8 @@ public class IntercomDrinksRunner implements ApplicationRunner {
         Assert.notEmpty(applicationArguments.getNonOptionArgs(), NO_ARGUMENT);
 
         Assert.isTrue(applicationArguments.getOptionNames().stream().anyMatch(i -> i.equals(CUSTOMERS)), NO_PARAMETER);
-        Assert.isTrue(applicationArguments.getOptionNames().size() > 0 && applicationArguments.getOptionNames().size() < 2, MANY_ARGUMENTS);
-        Assert.isTrue(applicationArguments.getNonOptionArgs().size() > 0 && applicationArguments.getNonOptionArgs().size() < 2,
+        Assert.isTrue(!applicationArguments.getOptionNames().isEmpty() && applicationArguments.getOptionNames().size() < 2, MANY_ARGUMENTS);
+        Assert.isTrue(!applicationArguments.getNonOptionArgs().isEmpty() && applicationArguments.getNonOptionArgs().size() < 2,
                 MANY_PARAMETERS);
 
         String path = applicationArguments.getNonOptionArgs().stream().findFirst().get();
@@ -58,16 +58,16 @@ public class IntercomDrinksRunner implements ApplicationRunner {
         Assert.isTrue(Files.exists(jsonPath), NO_FILE);
 
         List<Customer> customers = new ArrayList<>();
-        Files.readAllLines(jsonPath).forEach(s -> {
+        Files.readAllLines(jsonPath).forEach(line -> {
             try {
-                customers.add(objectMapper.readValue(s, Customer.class));
+                customers.add(objectMapper.readValue(line, Customer.class));
             } catch (IOException e) {
                 LOGGER.error(e.getMessage());
             }
         });
 
-        System.out.println("\n=== CUSTOMERS IN RANGE " + intercomProperties.getDistance() + " km ===");
-        System.out.println(drinksService.findCustomersInRange(customers));
+        LOGGER.info("\n=== CUSTOMERS IN RANGE {} km ===", intercomProperties.getDistance());
+        LOGGER.info(drinksService.findCustomersInRange(customers));
     }
 
 }

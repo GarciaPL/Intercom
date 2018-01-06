@@ -17,10 +17,11 @@ public class DrinksServiceImpl implements DrinksService {
     @Override
     public String findCustomersInRange(List<Customer> customers) {
 
-        List<Customer> sortedCustomers = customers.stream().sorted(Comparator.comparing(Customer::getUserId)).collect(Collectors.toList());
+        List<Customer> sortedCustomersById = customers.stream().sorted(Comparator.comparing(Customer::getUserId))
+                .collect(Collectors.toList());
 
-        StringBuffer customersInRange = new StringBuffer();
-        sortedCustomers.forEach(customer -> {
+        StringBuilder customersInRange = new StringBuilder();
+        sortedCustomersById.forEach(customer -> {
 
             // radius * arccos(sin(x1) * sin(x2) + cos(x1) * cos(x2) * cos(y1 - y2))
             double distance = intercomProperties.getEarthRadius() *
