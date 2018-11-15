@@ -2,7 +2,7 @@
 
 Application has been created for technical test purpose during interview process.
 
-We have customer records in JSON file called customers.json with one customer per line,.We want to invite any customer within 100km of our office located in Dublin for some food and drinks. Program will read the list of customers and output the names and user ids of matching customers in range 100km, sorted by user id in ascending order.
+We have customer records in JSON file called customers.json with one customer per line, we would like to invite any customer within 100km of our office located in Dublin for some food and drinks. Program will read the list of customers and output the names and user ids of matching customers in range 100km, sorted by user id in ascending order.
 
 Formula described on [Wikipedia](https://en.wikipedia.org/wiki/Great-circle_distance)  might be used to calculate distance.
 Office GPS coordinates are **53.3393, -6.2576841.**
