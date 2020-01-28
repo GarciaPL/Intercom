@@ -1,5 +1,8 @@
 package ie.intercom.drinks;
 
+import static org.springframework.util.Assert.isTrue;
+import static org.springframework.util.Assert.notEmpty;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ie.intercom.drinks.config.IntercomProperties;
 import ie.intercom.drinks.model.Customer;
@@ -11,13 +14,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 @Component
 public class IntercomDrinksRunner implements ApplicationRunner {
@@ -33,41 +36,47 @@ public class IntercomDrinksRunner implements ApplicationRunner {
     private final String WRONG_EXTENSION = "File should have a JSON extension";
 
     @Autowired
-    DrinksService drinksService;
+    private DrinksService drinksService;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    IntercomProperties intercomProperties;
+    private IntercomProperties intercomProperties;
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
 
-        Assert.notEmpty(applicationArguments.getOptionNames(), NO_PARAMETER);
-        Assert.notEmpty(applicationArguments.getNonOptionArgs(), NO_ARGUMENT);
+        notEmpty(applicationArguments.getOptionNames(), NO_PARAMETER);
+        notEmpty(applicationArguments.getNonOptionArgs(), NO_ARGUMENT);
 
-        Assert.isTrue(applicationArguments.getOptionNames().stream().anyMatch(i -> i.equals(CUSTOMERS)), NO_PARAMETER);
-        Assert.isTrue(!applicationArguments.getOptionNames().isEmpty() && applicationArguments.getOptionNames().size() < 2, MANY_ARGUMENTS);
-        Assert.isTrue(!applicationArguments.getNonOptionArgs().isEmpty() && applicationArguments.getNonOptionArgs().size() < 2,
-                MANY_PARAMETERS);
+        isTrue(applicationArguments.getOptionNames().stream().anyMatch(i -> i.equals(CUSTOMERS)), NO_PARAMETER);
+        isTrue(!applicationArguments.getOptionNames().isEmpty() && applicationArguments.getOptionNames().size() < 2, MANY_ARGUMENTS);
+        isTrue(!applicationArguments.getNonOptionArgs().isEmpty() && applicationArguments.getNonOptionArgs().size() < 2,
+            MANY_PARAMETERS);
 
-        String path = applicationArguments.getNonOptionArgs().stream().findFirst().get();
-        Assert.isTrue(path.replaceAll("^.*\\.([^.]+)$", "$1").equals("json"), WRONG_EXTENSION);
-        Path jsonPath = Paths.get(path);
-        Assert.isTrue(Files.exists(jsonPath), NO_FILE);
+        Optional<String> foundArgs = applicationArguments.getNonOptionArgs().stream().findFirst();
+        if (foundArgs.isPresent()) {
+            String path = foundArgs.get();
+            isTrue(path.replaceAll("^.*\\.([^.]+)$", "$1").equals("json"), WRONG_EXTENSION);
 
-        List<Customer> customers = new ArrayList<>();
-        Files.readAllLines(jsonPath).forEach(line -> {
-            try {
-                customers.add(objectMapper.readValue(line, Customer.class));
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage());
-            }
-        });
+            Path jsonPath = Paths.get(path);
+            isTrue(Files.exists(jsonPath), NO_FILE);
 
-        LOGGER.info("\n=== CUSTOMERS IN RANGE {} km ===", intercomProperties.getDistance());
-        LOGGER.info(drinksService.findCustomersInRange(customers));
+            List<Customer> customers = new ArrayList<>();
+            Files.readAllLines(jsonPath).forEach(line -> {
+                try {
+                    customers.add(objectMapper.readValue(line, Customer.class));
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            });
+
+            LOGGER.info("\n=== CUSTOMERS IN RANGE {} km ===", intercomProperties.getDistance());
+            LOGGER.info(drinksService.findCustomersInRange(customers));
+        } else {
+            LOGGER.error("No arguments found!");
+        }
     }
 
 }

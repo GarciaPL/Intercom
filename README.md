@@ -82,8 +82,6 @@ Lisa Ahearn(39)
 ## License
 Code released under the  Apache License 2.0. Docs released under Creative Commons.
 
-[![ghit.me](https://ghit.me/badge.svg?repo=GarciaPL/Intercom)](https://ghit.me/repo/GarciaPL/Intercom)
-
 [![Build Status](https://travis-ci.org/GarciaPL/Intercom.svg?branch=master)](https://travis-ci.org/GarciaPL/Intercom)
 
 [![Known Vulnerabilities](https://snyk.io/test/github/garciapl/intercom/badge.svg)](https://snyk.io/test/github/garciapl/intercom)

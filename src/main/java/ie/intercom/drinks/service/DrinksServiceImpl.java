@@ -11,8 +11,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class DrinksServiceImpl implements DrinksService {
 
+    private IntercomProperties intercomProperties;
+
     @Autowired
-    IntercomProperties intercomProperties;
+    public DrinksServiceImpl(IntercomProperties intercomProperties) {
+        this.intercomProperties = intercomProperties;
+    }
 
     @Override
     public String findCustomersInRange(List<Customer> customers) {
@@ -23,13 +27,7 @@ public class DrinksServiceImpl implements DrinksService {
         StringBuilder customersInRange = new StringBuilder();
         sortedCustomersById.forEach(customer -> {
 
-            // radius * arccos(sin(x1) * sin(x2) + cos(x1) * cos(x2) * cos(y1 - y2))
-            double distance = intercomProperties.getEarthRadius() *
-                    Math.acos(Math.sin(Math.toRadians(intercomProperties.getOfficeLatitude())) * Math
-                            .sin(Math.toRadians(customer.getLatitude())) +
-                            Math.cos(Math.toRadians(intercomProperties.getOfficeLatitude())) * Math
-                                    .cos(Math.toRadians(customer.getLatitude())) *
-                                    Math.cos(Math.toRadians(intercomProperties.getOfficeLongitude() - (double) customer.getLongitude())));
+            double distance = calculateRadius(customer);
 
             if (distance < intercomProperties.getDistance()) {
                 customersInRange.append(customer.getName()).append("(").append(customer.getUserId()).append(") \n");
@@ -37,5 +35,16 @@ public class DrinksServiceImpl implements DrinksService {
         });
 
         return customersInRange.toString();
+
+    }
+
+    // radius * arccos(sin(x1) * sin(x2) + cos(x1) * cos(x2) * cos(y1 - y2))
+    private double calculateRadius(Customer customer) {
+        return intercomProperties.getEarthRadius() *
+            Math.acos(Math.sin(Math.toRadians(intercomProperties.getOfficeLatitude())) * Math
+                .sin(Math.toRadians(customer.getLatitude())) +
+                Math.cos(Math.toRadians(intercomProperties.getOfficeLatitude())) * Math
+                    .cos(Math.toRadians(customer.getLatitude())) *
+                    Math.cos(Math.toRadians(intercomProperties.getOfficeLongitude() - (double) customer.getLongitude())));
     }
 }

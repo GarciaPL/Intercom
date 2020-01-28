@@ -7,11 +7,11 @@ import static org.mockito.Mockito.when;
 
 import ie.intercom.drinks.config.IntercomProperties;
 import ie.intercom.drinks.model.Customer;
+import java.util.List;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -21,8 +21,7 @@ public class DrinksServiceImplTest {
     @Mock
     private IntercomProperties intercomProperties;
 
-    @InjectMocks
-    private DrinksService drinksService = new DrinksServiceImpl();
+    private DrinksService drinksService;
 
     private Customer customerFirst;
     private Customer customerSecond;
@@ -38,6 +37,8 @@ public class DrinksServiceImplTest {
         when(intercomProperties.getOfficeLatitude()).thenReturn(53.3393);
         when(intercomProperties.getOfficeLongitude()).thenReturn(-6.2576841);
         when(intercomProperties.getDistance()).thenReturn(100.0);
+
+        drinksService = new DrinksServiceImpl(intercomProperties);
     }
 
     @Test
@@ -53,7 +54,9 @@ public class DrinksServiceImplTest {
     public void testOutRange() {
         when(intercomProperties.getDistance()).thenReturn(10.0);
 
-        String result = drinksService.findCustomersInRange(Lists.newArrayList(customerFirst, customerSecond, customerThird));
+        List<Customer> customers = Lists.newArrayList(customerFirst, customerSecond, customerThird);
+
+        String result = drinksService.findCustomersInRange(customers);
 
         assertThat(result, isEmptyString());
     }
